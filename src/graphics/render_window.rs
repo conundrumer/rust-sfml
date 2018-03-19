@@ -56,6 +56,25 @@ impl RenderWindow {
         }
     }
 
+    /// Construct the window from an existing control.
+    ///
+    /// Use this constructor if you want to create an SFML rendering area into an already existing control.
+    ///
+    /// The second parameter is an optional structure specifying advanced OpenGL context settings such as antialiasing, depth-buffer bits, etc. You shouldn't care about these parameters for a regular usage of the graphics module.
+    ///
+    /// # Arguments
+    /// * handle - Platform-specific handle of the control (HWND on Windows, Window on Linux/FreeBSD, NSWindow on OS X)
+    /// * settings - Additional settings for the underlying OpenGL context
+    pub fn from_handle(handle: ::csfml_window_sys::sfWindowHandle, settings: &ContextSettings) -> RenderWindow {
+        let sf_render_win: *mut ffi::sfRenderWindow = unsafe {
+            ffi::sfRenderWindow_createFromHandle(handle, &settings.raw())
+        };
+        assert!(!sf_render_win.is_null(), "Failed to create RenderWindow from handle");
+        RenderWindow {
+            render_window: sf_render_win,
+        }
+    }
+
     /// Change a render window's icon
     /// pixels must be an array of width x height pixels in 32-bits RGBA format.
     ///

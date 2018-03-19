@@ -93,6 +93,23 @@ impl Window {
         Window { window: sf_win }
     }
 
+    /// Construct the window from an existing control.
+    ///
+    /// Use this constructor if you want to create an OpenGL rendering area into an already existing control.
+    ///
+    /// The second parameter is an optional structure specifying advanced OpenGL context settings such as antialiasing, depth-buffer bits, etc.
+    ///
+    /// # Arguments
+    /// * handle - Platform-specific handle of the control
+    /// * settings - Additional settings for the underlying OpenGL context
+    pub fn from_handle(handle: ffi::sfWindowHandle, settings: &ContextSettings) -> Window {
+        let sf_win: *mut ffi::sfWindow = unsafe {
+            ffi::sfWindow_createFromHandle(handle, &settings.raw())
+        };
+        assert!(!sf_win.is_null(), "Failed to create Window from handle");
+        Window { window: sf_win }
+    }
+
     ///  Pop the event on top of event queue, if any, and return it
     ///
     /// This function is not blocking: if there's no pending event then
